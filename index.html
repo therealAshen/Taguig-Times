@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+    <title>Taguig Times</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Banner styling */
+        .banner {
+            width: 100%;
+            aspect-ratio: 5 / 2;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 6px;
+        }
+
+        .search-box {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        #searchInput {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        #searchButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #searchButton:hover {
+            background: #0056b3;
+        }
+        .article-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+        #noResults {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        
+    </style>
+</head>
+<body>
+        <h1>Taguig Times</h1>
+        <p><i>"Fun project made by Ashen. Be educated :3"</i></p>
+
+    <img src="/storage/emulated/0/Android/data/com.fazil.htmleditor/files/Documents/Project Veritas/media/images/PNGUSA.png" class="banner">
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search news articles...">
+        <button id="searchButton">Search</button>
+        <button id="clearButton" style="padding: 10px 20px; font-size: 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">Clear</button>
+    </div>
+    
+    <div id="noResults" class="hidden">No articles found matching your search.</div>
+    
+
+    
+    <article>
+        <div class="article-section" data-date="2025-12-12">
+            <h2>December 12, 2025</h2>
+
+            <h3>United States issues new sanctions against <b>Maduro's family and Oil sector</b> (1/3)</h3>
+            <p>The Donald Trump Administration is increasing its pressure on <b>President Maduro of Venezuela</b> after seizing an oil tanker off the coast. Venezuela relies heavily on oil, leading Mr. Maduro's administration to smuggle crude oil to countries like <i>Iran, China, and others.</i> Trump allegedly said it was tied to terrorist groups.</p>
+            
+            <h3>Trump plans to loosen restrictions on <b>marijuana</b> (2/3)</h3>
+            <p>President Trump is expected to loosen restrictions on marijuana by moving it to Schedule III—similar to common prescription drugs. He discussed the plan with Speaker Mike Johnson (R-Louisiana). The move wouldn't legalize or decriminalize marijuana but would ease research barriers.</p>
+            
+            <h3>Donald Trump led Republicans to power in 2024, <b>2026</b> might be a different story</h3>
+            <p>Trump failed to persuade Indiana state senators to vote on a new gerrymandered map meant to help Republicans gain seats. More concerning for Republicans is Trump's slipping support on the issues that helped him win 2024. He dismissed concerns, telling Politico he gave himself "A+++++" on the economy.</p>
+        </div>
+        
+                <div class="article-section" data-date="2025-12-11">
+            <h2>December 11, 2025</h2>
+
+            <h3>The <b>Nobel Peace Prize Winner</b> Pressures to end Maduro's Rule in Venezuela along with the Trump Administration (1/3)</h3>
+            <p>On December 11, 2025 <b>Maria Corina Machado</b> was in Oslo vowing to finally end President Nicolas Maduro's time in office. The <i>Donald Trump Administration</i> is also pressuring Maduro's presidency to end because of accusations by the Administration of flooding America with drugs.</p>
+            
+            <h3>A United States Admiral killed <b>2</b> boat strike survivors (2/3)</h3>
+            <p>An order allegedly given by <b>Admiral Frank Bradley</b> is under scrutiny by the <i>American Congress</i>. Congress passed a Pentagon Bill pressuring <b>Hegseth</b> to release evidence of the boat strike incident.</p>
+            
+            <h3>A Judge Rejects <b>Presidential request by Donald Trump</b> to dismiss California rail funding (3/3)</h3>
+            <p>A major <b>$4 billion</b> dismissal attempt by <i>President Donald Trump</i> was challenged in court by a judge and rejected, giving the green light to fund improvements in <b>California transportation.</b></p> 
+        </div>
+        
+    </article>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const clearButton = document.getElementById('clearButton');
+        const articleSections = document.querySelectorAll('.article-section');
+        const noResults = document.getElementById('noResults');
+        const minDate = new Date('2025-12-11');
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let foundResults = false;
+
+            articleSections.forEach(section => {
+                const articleDate = new Date(section.getAttribute('data-date'));
+
+                if (articleDate < minDate) {
+                    section.classList.add('hidden');
+                    return;
+                }
+
+                if (searchTerm === '') {
+                    section.classList.remove('hidden');
+                    foundResults = true;
+                    removeHighlights(section);
+                } else {
+                    const content = section.textContent.toLowerCase();
+                    if (content.includes(searchTerm)) {
+                        section.classList.remove('hidden');
+                        highlightText(section, searchTerm);
+                        foundResults = true;
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                }
+            });
+
+            if (foundResults) {
+                noResults.classList.add('hidden');
+            } else {
+                noResults.classList.remove('hidden');
+            }
+        }
+
+        function highlightText(element, searchTerm) {
+            removeHighlights(element);
+
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            const nodesToReplace = [];
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.nodeValue.toLowerCase().includes(searchTerm)) {
+                    nodesToReplace.push(node);
+                }
+            }
+
+            nodesToReplace.forEach(node => {
+                const span = document.createElement('span');
+                span.innerHTML = node.nodeValue.replace(
+                    new RegExp(searchTerm, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+                node.parentNode.replaceChild(span, node);
+            });
+        }
+
+        function removeHighlights(element) {
+            const highlights = element.querySelectorAll('.highlight');
+            highlights.forEach(highlight => {
+                const parent = highlight.parentNode;
+                parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+                parent.normalize();
+            });
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            performSearch();
+        }
+
+        searchButton.addEventListener('click', performSearch);
+        clearButton.addEventListener('click', clearSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        performSearch();
+    </script>
+</body>
+</html>
